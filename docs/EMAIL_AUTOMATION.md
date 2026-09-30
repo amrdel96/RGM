@@ -1,0 +1,8 @@
+# Email automation
+
+EmailProvider.send(message, idempotencyKey) returns provider ID/status; adapters: mock, Hostinger SMTP initially, Resend/Postmark later. Configuration selects provider; application workflow is vendor-independent.
+Customer template receives only an allowlisted machine DTO plus customer name, locale, approved contacts and media. Website price visibility and email price visibility are independent. Render selling price only if send_email_price is currently enabled and amount/currency exist. Otherwise use localized commercial-offer follow-up text. Never include supplier/cost/commission/source/internal notes.
+Internal notification routes to Site Settings by lead type and includes authorized selling terms and dashboard link. Addresses are configuration, not component constants. Missing routing produces a visible configuration error in staff operations, not loss of lead.
+Branded EN/AR HTML and plain text; Arabic dir=rtl and model/code bidi isolation. Main optimized image, optional gallery/video/PDF links. No bulk photo attachments. Escape all submitted content.
+Outbox leases with SKIP LOCKED, bounded attempts and exponential backoff. Distinguish provider acceptance, delivery, bounce and permanent failure. SMTP lacks general exactly-once semantics; ambiguous timeout is marked UNKNOWN for reconciliation. Never blindly resend accepted messages. Staff retries are audited and permission-checked.
+Nonproduction provider defaults to mock. Real test sending additionally requires an explicit recipient allowlist. Credentials are environment-only. Logs redact credentials and unnecessary message bodies. Preserve Hostinger mailbox service and existing MX records.

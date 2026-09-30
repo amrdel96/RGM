@@ -1,0 +1,7 @@
+# Content migration plan
+
+Source snapshots: migration/source/pages.json and posts.json; nineteen public objects captured on 2026-09-21. URL_INVENTORY.csv retains source IDs, paths, titles and original publication dates. These snapshots are preservation inputs, not sanitized production content.
+Map About, Service, Contact and homepage into structured fields. Convert Divi sections to headings, prose, lists and approved media. Strip scripts, shortcodes, tracking embeds, inline event handlers and unsafe URLs. Record source-to-block provenance. Retain original source unchanged alongside transformed version and review status.
+Preserve all twelve articles and original dates pending review; don't create a new knowledge program. Check technical claims and awkward copy without inventing new claims. Arabic translations require industry terminology review. English-only content remains explicitly untranslated until ready; no fake Arabic metadata.
+Asset manifest records source URL, local/object key, dimensions, alt text, owning content and migration state. Do not treat generic old stock photography as verified RGM premises or machinery. Original logo is recovered; machine photos and confirmed company assets remain required.
+Contacts are extracted as legacy evidence, not silently configured as final destinations. Verify primary WhatsApp, inquiry inbox, country details and registered-location wording. Legal pages were placeholders; draft separately and obtain business/legal review before launch.

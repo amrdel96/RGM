@@ -1,0 +1,7 @@
+# Bulk import contract
+
+Admin-only CSV/XLSX -> private upload -> size/type limits -> parse -> normalize -> validate -> preview -> explicit commit. Default resulting machines are DRAFT. No spreadsheet becomes a source of truth after import.
+Template: Manufacturer, Model, Year, Machine Name, Category, Subcategory, Colors, Sheet Size, Impressions, Serial Number, Condition, Location, Selling Price, Currency, English Description, Arabic Description, Configuration, Video URL, Status.
+Reject supplied machine codes, unsupported formula/macros, unknown category mappings, negative prices, invalid years/ranges, invalid URLs and oversized cells/rows. Preserve text codes and serial numbers. Guard XLSX zip expansion; do not execute formulas. Escape formula-leading cells in CSV error exports.
+Show original row number, field, reason and required correction. Import valid rows only after review; report skipped invalid rows. Server repeats validation at commit; bind preview to file checksum, schema version and current permission. Use batch+row idempotency so retries cannot duplicate stock. Draft import does not fetch arbitrary media URLs; avoid SSRF. Reconcile duplicates by explicit staff decision, never silently overwrite.
+Initial limits proposed: 10 MB, 1,000 rows, 32 KB text per cell; tune against real templates. Generated codes are assigned by database only at commit. Log batch, actor, row outcomes and created machine IDs.

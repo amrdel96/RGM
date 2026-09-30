@@ -1,0 +1,4 @@
+# SEO implementation contract
+Server-render published content and machine DTOs. Unique localized title/description, self canonical, EN/AR reciprocal hreflang only for real translations, x-default where appropriate. XML sitemap contains only public published pages and visible machines. Query filter combinations are noindex/follow unless curated indexable pages exist; canonical policy must match content, not blindly collapse unrelated pages.
+Organization schema uses confirmed company data. Product schema omits fabricated offers/prices; emit appropriate properties only. Breadcrumb and Article schema use source dates. Do not publish LocalBusiness/office coordinates without factual confirmation. Escape JSON-LD safely and prohibit private fields.
+Staging is access-controlled and noindex. Admin/login/private APIs are not indexed. robots.txt is not an authorization mechanism. Unknown URLs return true 404; removed content uses reviewed 301/410 policy. See SEO_MIGRATION.md.

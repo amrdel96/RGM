@@ -1,0 +1,7 @@
+# Operations runbook proposal
+Daily: review new/unassigned leads and failed/unknown delivery jobs; verify inventory changes and availability. Staff can resend only after reconciliation and permission check. Update contacts centrally; verify primary WhatsApp links in both languages.
+Publishing: create draft, complete mandatory identity/specification/media and bilingual content, review safe public preview, publish. Marking sold immediately suppresses all public surfaces while retaining code and lead history. Archive obsolete records; do not delete.
+Import: download template, upload, correct validation errors, review valid rows, commit as drafts, review/publish. Keep import report for reconciliation.
+Monitoring: application errors, lead submission failure/latency, queue age/retry exhaustion, upload failures, auth failures and backup health. Redact PII. Define operating alert recipients and recovery targets before launch.
+Backups: managed daily database backup plus configured point-in-time recovery; encrypted exports and media retention; periodic restore rehearsal including code sequence high-water marks and lead/outbox dedupe. Never reset the sequence or reuse codes after disaster recovery.
+Analytics: consent-gated GA4/GTM/optional Pixel; no customer names/emails/phone in events. Track brief-listed events with machine code only when appropriate, allowlisted attribution, consent version and retention policy. Dashboard metrics show true data or an explicit unavailable state.

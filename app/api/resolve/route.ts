@@ -1,0 +1,3 @@
+import {getDB} from '../../../lib/db';
+import {ok} from '../../../lib/http';
+export async function GET(request:Request){const path=new URL(request.url).searchParams.get('path')||'';if(path.length>400||!path.startsWith('/')||path.startsWith('//'))return ok({});const db=await getDB();const r=(await db.query('SELECT destination FROM redirects WHERE enabled=true AND source=ANY($1::text[])',[[path,path.replace(/\/$/,''),path.replace(/\/$/,'')+'/']])).rows[0];if(r)return ok({redirect:r.destination});const match=path.match(/^\/(?:ar\/)?machines\/([^/]+)\/?$/);if(match){const m=(await db.query("SELECT id FROM machines WHERE slug=$1 AND status IN ('SOLD','ARCHIVED')",[match[1]])).rows[0];if(m)return ok({gone:true});}return ok({});}

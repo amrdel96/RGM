@@ -1,0 +1,10 @@
+import sharp from 'sharp';
+import {getDB} from '../../../../lib/db';
+import {currentStaff,requireStaff} from '../../../../lib/auth';
+import {catalog,AppError} from '../../../../lib/repository';
+import {readMedia} from '../../../../lib/media';
+import {failure,originCheck,jsonBody,ok} from '../../../../lib/http';
+type Context={params:Promise<{id:string}>};
+export async function GET(request:Request,ctx:Context){try{const db=await getDB();const id=(await ctx.params).id;const m=(await db.query('SELECT * FROM media WHERE id=$1',[id])).rows[0];if(!m)throw new AppError('Not found',404);let permitted=false;if(m.machine_id)permitted=(await catalog(db,{},m.machine_id)).items.length>0;if(!permitted){const user=await currentStaff();permitted=!!user&&(m.machine_id?['ADMIN','SALES'].includes(user.role):['ADMIN','SALES'].includes(user.role));}if(!permitted)throw new AppError('Not found',404);let buffer=await readMedia(m.storage_key);const width=Math.min(2400,Math.max(100,Number(new URL(request.url).searchParams.get('w'))||1600));if(m.kind==='image')buffer=await sharp(buffer).resize(width,undefined,{withoutEnlargement:true}).webp({quality:82}).toBuffer();return new Response(new Uint8Array(buffer),{headers:{'Content-Type':m.mime,'Cache-Control':'private, no-store','Content-Disposition':m.kind==='pdf'?`attachment; filename="RGM-document.pdf"`:'inline','X-Content-Type-Options':'nosniff'}});}catch(e){return failure(e);}}
+export async function POST(request:Request,ctx:Context){try{originCheck(request);await requireStaff(['ADMIN']);const data=await jsonBody(request);await(await getDB()).query('UPDATE media SET sort_order=$2,alt_en=$3,alt_ar=$4 WHERE id=$1',[(await ctx.params).id,Math.max(0,Math.min(1000,Number(data.sort_order)||0)),String(data.alt_en||'').slice(0,300),String(data.alt_ar||'').slice(0,300)]);return ok({ok:true});}catch(e){return failure(e);}}
+export async function DELETE(request:Request,ctx:Context){try{originCheck(request);await requireStaff(['ADMIN']);await(await getDB()).query('DELETE FROM media WHERE id=$1',[(await ctx.params).id]);return ok({ok:true});}catch(e){return failure(e);}}

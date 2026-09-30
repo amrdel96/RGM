@@ -1,0 +1,6 @@
+# Validation plan
+Unit: code formatting, immutable-code rules, public projection, website/email price independence, search aliases, role matrix, locale mapping, import validation and message eligibility.
+Database integration: concurrent code allocation, transaction rollback, idempotency conflict, lead/outbox atomicity, worker leases, sold visibility and historical FK preservation. Use disposable PostgreSQL; in-memory tests cannot prove database constraints.
+E2E: Admin creates draft -> publishes -> customer searches/filters -> opens EN/AR detail -> submits -> lead/outbox committed -> mock delivery -> Sales sees lead -> Admin marks sold -> all public routes/API/sitemap omit machine -> history intact. Also test all five other lead types, imports with invalid rows, auth reset/expiry and role denial.
+UI: desktop/tablet/mobile EN+AR, RTL, labels/focus, 200% zoom, errors/loading/success, filter drawer, galleries, sticky actions, 404 and redirects. Run production build, lint, formatting and typecheck. Validate media/metadata/links and performance after representative real inventory is loaded.
+No production sends during QA. Test provider adapters against mocks/sandbox, then approved test recipients after configuration. Report actual executed checks separately in STATUS.md.

@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function NotFound(){return <main className="content-page" style={{padding:'100px 24px',margin:'auto'}}><p className="eyebrow">404 / RGM</p><h1>Page unavailable<br/><span lang="ar" dir="rtl">الصفحة غير متاحة</span></h1><p>This page or machine is no longer available.</p><div className="actions"><Link className="button" href="/machines">Browse machines</Link><Link className="button secondary" href="/ar/machines">تصفح الماكينات</Link></div></main>;}

@@ -1,0 +1,9 @@
+import {NextResponse} from 'next/server';
+import {ZodError} from 'zod';
+import {AppError} from './repository';
+export function originCheck(request:Request){const origin=request.headers.get('origin');const expected=new URL(process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3000').origin;if(origin!==expected)throw new AppError('Invalid request origin',403);}
+export async function limitedBody(request:Request,max=100000){if(Number(request.headers.get('content-length')||0)>max)throw new AppError('Request too large',413);const reader=request.body?.getReader();const chunks:Uint8Array[]=[];let length=0;if(reader){for(;;){const {done,value}=await reader.read();if(done)break;length+=value.length;if(length>max){await reader.cancel();throw new AppError('Request too large',413);}chunks.push(value);}}return Buffer.concat(chunks);}
+export async function jsonBody(request:Request){const raw=(await limitedBody(request)).toString('utf8');try{return JSON.parse(raw);}catch{throw new AppError('Invalid JSON',400);}}
+export async function limitedForm(request:Request){return new Response(new Uint8Array(await limitedBody(request,11000000)),{headers:{'Content-Type':request.headers.get('content-type')||''}}).formData();}
+export function failure(e:unknown){if(e instanceof ZodError)return NextResponse.json({error:'Please check the highlighted fields.',fields:e.issues.map(i=>({path:i.path.join('.'),message:i.message}))},{status:422});if(e instanceof AppError)return NextResponse.json({error:e.message},{status:e.status});console.error('RGM operation failed',e instanceof Error?e.name:'UnknownError');return NextResponse.json({error:'The request could not be completed. Please try again.'},{status:500});}
+export const ok=(data:unknown,status=200)=>NextResponse.json(data,{status,headers:{'Cache-Control':'no-store'}});
