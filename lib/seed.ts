@@ -2,6 +2,12 @@ import {readFile} from 'node:fs/promises';
 import sanitize from 'sanitize-html';
 import type {DB} from './db';
 export async function seed(db:DB){
+ const contacts={company_name:'Roza Graphic Machinery',general_email:'info@rgmachinery.com',inquiry_email:'info@rgmachinery.com',service_email:'info@rgmachinery.com',primary_whatsapp:'+201222211199',phone:'+201222211199',countries:[
+  {country:'EG',label:'Egypt',address:'Office: Zahraa’ Maadi, Cairo, Egypt. Warehouse: El-Ashraf Warehouses, Saft-Kerdasa Road, Ring Road, Giza.',phone:'+201222211199',email:'amr@rgmachinery.com'},
+  {country:'SA',label:'Saudi Arabia',address:'3638 Building 2 Al-Aiania St., off Sharqa, Al Faisaliyah District, Riyadh 12883.',phone:'+966539988661',email:'amr@rgmachinery.com'},
+  {country:'AE',label:'UAE',address:'Saif Zone, Q1-03-039/C, Sharjah Airport.',phone:'+971501815145',email:'amr@rgmachinery.com'}
+ ],footer_en:'Egypt · Saudi Arabia · UAE · Worldwide',footer_ar:'مصر · السعودية · الإمارات · حول العالم'};
+ await db.query("UPDATE settings SET data=$1 WHERE id=1 AND data='{}'",[JSON.stringify(contacts)]);
  const categories=[['sheetfed-offset','Sheetfed Offset','طباعة أوفست ورقية'],['web-offset','Web Offset','أوفست رول'],['digital','Digital Printing','طباعة رقمية'],['flexographic','Flexographic','طباعة فلكسو'],['prepress','Prepress','ما قبل الطباعة'],['cutting','Cutting','قص الورق'],['folding','Folding','طي الورق'],['die-cutting','Die Cutting','التكسير والقص بالقوالب'],['binding','Binding','تجليد'],['folder-gluing','Folder Gluing','طي ولصق'],['packaging','Packaging','تغليف'],['laminating','Laminating','تغليف حراري'],['other','Other Machinery','ماكينات أخرى']];
  for(const [slug,en,ar] of categories)await db.query("INSERT INTO taxonomy(kind,slug,name_en,name_ar) VALUES('category',$1,$2,$3) ON CONFLICT DO NOTHING",[slug,en,ar]);
  // Manufacturer vocabulary is sourced from the existing company site; no stock is seeded.

@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile,readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { Pool } from 'pg';
 import { PGlite } from '@electric-sql/pglite';
@@ -13,8 +13,8 @@ export async function createLocalDB(directory?:string):Promise<DB>{
 }
 export async function migrate(db:DB){
  await db.query('CREATE TABLE IF NOT EXISTS schema_migrations (name text PRIMARY KEY)');
- const {rows}=await db.query('SELECT name FROM schema_migrations WHERE name=$1',['001_initial']);
- if(!rows.length){const sql=await readFile(path.join(process.cwd(),'database/001_initial.sql'),'utf8'); await db.transaction(async tx=>{await tx.exec(sql);await tx.query('INSERT INTO schema_migrations VALUES ($1)',['001_initial']);});}
+ const files=(await readdir(path.join(process.cwd(),'database'))).filter(name=>/^\d+_.+\.sql$/.test(name)).sort();
+ for(const file of files){const name=file.replace(/\.sql$/,'');const {rows}=await db.query('SELECT name FROM schema_migrations WHERE name=$1',[name]);if(!rows.length){const sql=await readFile(path.join(process.cwd(),'database',file),'utf8');await db.transaction(async tx=>{await tx.exec(sql);await tx.query('INSERT INTO schema_migrations VALUES ($1)',[name]);});}}
 }
 export async function getDB():Promise<DB>{
  if(!globals.rgmDB) globals.rgmDB=(async()=>{
